@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html style="height:100%">
+
+<head>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+    <!--Mapbox CSS and JS Libraries-->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css" rel="stylesheet" />
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<style>
+    body {
+        margin: 0;
+    }
+    
+    .flex {
+        display: flex;
+        flex-wrap: wrap;
+        height: 100vh;
+        margin-bottom: unset;
+    }
+    
+    .row .col {
+        padding: 0 !important;
+    }
+    
+    #map {
+        position: relative;
+        width: 100%;
+        height: 100%
+    }
+    
+    .panel {
+        padding: unset !important;
+        overflow-y: auto;
+        margin-left: unset !important;
+        margin-right: unset !important;
+    }
+    
+    .mapboxgl-popup {
+        max-width: 400px;
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        background-color: #606b60;
+        border-color: black;
+    }
+</style>
+
+<body>
+    <div class="row flex">
+        <!--            Left Panel-->
+        <div class="col s12 m6 panel">
+            <div id='map'></div>
+        </div>
+        <!--            Right Panel-->
+        <div class="col s12 m6 grey lighten-4 panel" style='overflow:scroll'>
+            <div class="row panel">
+                <!--                    Tabs menu-->
+                <div class="col s12">
+                    <ul class="tabs">
+                        <li class="tab col s3"><a href="#test1">About</a></li>
+                        <li class="tab col s3"><a href="#test2">Parcel</a></li>
+                        <li class="tab col s3"><a href="#test3">Map Layers</a></li>
+                        <li class="tab col s3"><a href="#test4">Definitions</a></li>
+                    </ul>
+                </div>
+                <!--                    Tab Pages-->
+                <div id="test1" class="col s12">
+                    <div class="container">
+                        <h5>Title Area</h5>
+                        <p>"S ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
+                        </p>
+                    </div>
+                </div>
+                <div id="test2" class="col s12">Parcels
+                    <div class="container">
+                        <h3>Parcels</h3>
+                    </div>
+                </div>
+                <div id="test3" class="col s12">
+                    <ul class="collection">
+                        <li class="collection-item">
+                            <p>
+                                <label>
+                                        <input type="checkbox" name='Cases'/> <!--This is where you add the real name of the layer-->
+                                        <span>Cases</span>
+                                    </label>
+                            </p>
+                        </li>
+                        <li class="collection-item">
+                            <p>
+                                <label>
+                                        <input type="checkbox" name='LB Boundary'/>
+                                        <span>LB Boundary</span>
+                                    </label>
+                            </p>
+                        </li>
+                        <li class="collection-item">
+                            <p>
+                                <label>
+                                        <input type="checkbox" name='COUNCILS'/>
+                                        <span>Councils</span>
+                                    </label>
+                            </p>
+                        </li>
+                        <li class="collection-item">
+                            <p>
+                                <label>
+                                        <input type="checkbox" name='Council Boundaries'/>
+                                        <span>Council Boundaries</span>
+                                    </label>
+                            </p>
+                        </li>
+                        <li class="collection-item">
+                            <p>
+                                <label>
+                                        <input type="checkbox" name='LB ENVSCREEN POLY'/>
+                                        <span>LB ENVIROSCREEN</span>
+                                    </label>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+                <div id="definitions" class="col s12"></div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css" />
+<!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibGJob3VzaW5nIiwiYSI6ImNrN3R1YnlybDB2M2szc280d3pmNTViZHYifQ.2lFHVEQl5YbTp4qgM2OmGQ';
+    var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/lbhousing/ckceezylu0ivn1iqrkru465eh', // stylesheet location
+        center: [-118.165, 33.769], // starting position [lng, lat]
+        zoom: 11 // starting zoom
+    });
+
+    //Function to create tabs from materialize
+    var el = $('.tabs').first()[0];
+    var instance = M.Tabs.init(el);
+    $(document).ready(function() {
+        $('.tabs').tabs();
+    });
+    instance.updateTabIndicator();
+
+    //Function to take name of checkbox change mapbox layer
+    $("input[type=checkbox]").change(function() {
+        var datalayer = $(this).attr("name");
+        var visibility = map.getLayoutProperty(datalayer, 'visibility');
+        console.log(map.getLayoutProperty(datalayer, 'visibility'))
+        if (visibility === 'visible') {
+            map.setLayoutProperty(datalayer, 'visibility', 'none');
+        } else {
+            map.setLayoutProperty(datalayer, 'visibility', 'visible');
+        }
+    })
+
+    // Click event for popup
+    map.on('click', 'Cases', function(e) {
+        var coordinates = e.features[0].geometry.coordinates.slice();
+        var apn = e.features[0].properties.APN;
+        var address = e.features[0].properties.Address_Normalized;
+        var totalViolations = e.features[0].properties.Total_Violations;
+        var caseDescription = e.features[0].properties.Case_Description_Full;
+        var yearbuilt = e.features[0].properties.Year_Built
+
+        console.log(e.features[0].properties)
+
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        new mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setHTML("<h6><p><b>ADDRESS: " + address + "</b></h6><p>APN: " + apn + "</p><p>CASE DESCRIPTION:  " + caseDescription + "</p><p>YEAR BUILT: " + yearbuilt + "</p>")
+            .addTo(map);
+        // Change the cursor to a pointer when the mouse is over the places layer.
+        map.on('mouseenter', 'Cases', function(e) {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+
+        // Change it back to a pointer when it leaves.
+        map.on('mouseleave', 'Cases', function(e) {
+            map.getCanvas().style.cursor = '';
+        });
+    });
+    map.doubleClickZoom.enable();
+    map.addControl(new mapboxgl.NavigationControl());
+    map.addControl(
+        new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl
+        })
+    );
+</script>
+
+</html>
