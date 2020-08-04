@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html style="height:100%">
+
+<head>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified JavaScript -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- Compiled and minified CSS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+    <!--Mapbox Geocoder CSS and JS Libraries-->
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css" />
+    <!--Mapbox CSS and JS Libraries-->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js"></script>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<style>
+    body {
+        margin: 0;
+    }
+    
+    .flex {
+        display: flex;
+        flex-wrap: wrap;
+        height: 100vh;
+        margin-bottom: unset;
+    }
+    
+    .row .col {
+        padding: 0 !important;
+    }
+    
+    #map {
+        position: relative;
+        width: 100%;
+        height: 100%
+    }
+    
+    .panel {
+        padding: unset !important;
+        overflow-y: auto;
+        margin-left: unset !important;
+        margin-right: unset !important;
+    }
+    
+    .mapboxgl-popup {
+        max-width: 400px;
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        background-color: #606b60;
+        border-color: black;
+    }
+    
+    input {
+        font: inherit !important;
+        width: 100% !important;
+        border: 0 !important;
+        background-color: transparent !important;
+        margin: 0 !important;
+        height: 30px !important;
+        color: #404040 !important;
+        color: rgba(0, 0, 0, 0.75) !important;
+        padding: 6px 45px!important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap;
+        overflow: hidden!important;
+    }
+    
+    .infoarea {
+        margin: 25px;
+    }
+</style>
+
+<body>
+    <div class="row flex">
+        <!--            Left Panel-->
+        <div class="col s12 m6 panel">
+            <div id='map'></div>
+        </div>
+        <!--            Right Panel-->
+        <div class="col s12 m6 grey lighten-4 panel" style='overflow:scroll'>
+            <div class="row panel">
+                <!--                    Tabs menu-->
+                <div class="col s12">
+                    <ul class="tabs">
+                        <li class="tab col s3"><a href="#test1">About</a></li>
+                        <li class="tab col s3"><a href="#test2">Code Enforced Properties</a></li>
+                        <li class="tab col s3"><a href="#test3">Map Layers</a></li>
+                        <li class="tab col s3"><a href="#definitions">Definitions</a></li>
+                    </ul>
+                </div>
+                <!--                    Tab Pages-->
+                <div id="test1" class="col s12">
+                    <div class="infoarea">
+                        <h5>Title Area</h5>
+                        <p> ""
+                        </p>
+                    </div>
+                </div>
+                <div id="test2" class="col s12">
+                    <div class="infoarea">
+                        <h5>Code Enforced Properties</h5>
+                    </div>
+                </div>
+                <div id="test3" class="col s12">
+                    <ul class="collection">
+                        <li class="collection-item">
+                            <p>
+                                <label>
+                                        <input type="checkbox" checked="checked" name='LB Boundary Line'/>
+                                        <span><b>Long Beach Boundary</b></span>
+                                    </label>
+                                <table class="striped">
+                                    <thead>
+                                        <tr>
+                                            <th>City Boundary</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#000000;"></a>
+                                            </td>
+                                            <td>Long Beach</td>
+                                    </tbody>
+                                </table>
+                            </p>
+                        </li>
+                        <li class="collection-item">
+                            <p>
+                                <label>
+                                        <input type="checkbox" checked="checked" name='CodeViolation_Curb'/> <!--This is where you add the real name of the layer-->
+                                        <span><b>Cases</b></span>
+                                    </label>
+                                <table class="striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Curb Only Cases</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#6a5df9;"></a>
+                                            </td>
+                                            <td>Curbside Only Cases</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#cf7e6e;"></a>
+                                            </td>
+                                            <td>Mixed Cases</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </p>
+                        </li>
+                        <li class="collection-item">
+                            <p>
+                                <label>
+                                        <input type="checkbox" checked="checked" name='City Council Boundaries Fill'/>
+                                        <span><b>Council Districts</b></span>
+                                    </label>
+                                <table class="striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Council Dristricts Numbers</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#d19999;"></a>
+                                            </td>
+                                            <td>District 1</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#e3d94a;"></a>
+                                            </td>
+                                            <td>District 2</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#1782d3;"></a>
+                                            </td>
+                                            <td>District 3</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#6dbb35;"></a>
+                                            </td>
+                                            <td>District 4</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#f25e02;"></a>
+                                            </td>
+                                            <td>District 5</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#1ee6c5;"></a>
+                                            </td>
+                                            <td>District 6</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#ed73ca;"></a>
+                                            </td>
+                                            <td>District 7</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#ec9832;"></a>
+                                            </td>
+                                            <td>District 8</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#979191;"></a>
+                                            </td>
+                                            <td>District 9</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </p>
+                        </li>
+                        <li class="collection-item">
+                            <p>
+                                <label>
+                                        <input type="checkbox" checked="checked" name='calenviron'/>
+                                        <span><b>CalEnviroScreen - Long Beach Area</b></span>
+                                    </label>
+                                <table class="striped">
+                                    <thead>
+                                        <tr>
+                                            <th>CalEnviroScreen Scores</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#006100;"></a>
+                                            </td>
+                                            <td>01% - 10%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#3c8000;"></a>
+                                            </td>
+                                            <td>11% - 20%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#6ba100;"></a>
+                                            </td>
+                                            <td>21% - 30%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#a4c400;"></a>
+                                            </td>
+                                            <td>31% - 40%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#dfeb00;"></a>
+                                            </td>
+                                            <td>41% - 50%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#ffea00;"></a>
+                                            </td>
+                                            <td>51% - 60%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#ffbb00;"></a>
+                                            </td>
+                                            <td>61% - 70%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#ff9100;"></a>
+                                            </td>
+                                            <td>71% - 80%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#ff6200;"></a>
+                                            </td>
+                                            <td>81% - 90%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#ff2200;"></a>
+                                            </td>
+                                            <td>91% - 100%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="waves-effect waves-light btn-small" style="background-color:#c2c2c2;"></a>
+                                            </td>
+                                            <td>High Pollution, Low Pollution</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+                <div id="definitions" class="col s12">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibGJob3VzaW5nIiwiYSI6ImNrN3R1YnlybDB2M2szc280d3pmNTViZHYifQ.2lFHVEQl5YbTp4qgM2OmGQ';
+    var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/lbhousing/ckcfjvqit07cz1inzic14ug9r', // stylesheet location
+        center: [-118.165, 33.769], // starting position [lng, lat]
+        zoom: 11 // starting zoom
+    });
+
+    //Function to create tabs from materialize
+    var el = $('.tabs').first()[0];
+    var instance = M.Tabs.init(el);
+    $(document).ready(function() {
+        $('.tabs').tabs();
+    });
+    instance.updateTabIndicator();
+
+    //Function to take name of checkbox change mapbox layer
+    $("input[type=checkbox]").change(function() {
+        var datalayer = $(this).attr("name");
+        var visibility = map.getLayoutProperty(datalayer, 'visibility');
+        console.log(map.getLayoutProperty(datalayer, 'visibility'))
+        if (visibility === 'visible') {
+            map.setLayoutProperty(datalayer, 'visibility', 'none');
+        } else {
+            map.setLayoutProperty(datalayer, 'visibility', 'visible');
+        }
+    })
+
+    // Click event for popup
+    map.on('click', 'CodeViolation_Curb', function(e) {
+        var coordinates = e.features[0].geometry.coordinates.slice();
+        var apn = e.features[0].properties.APN;
+        var address = e.features[0].properties.Address_Normalized;
+        var totalViolations = e.features[0].properties.Total_Violations;
+        var caseDescription = e.features[0].properties.Case_Description_Full;
+        var yearbuilt = e.features[0].properties.Year_Built
+
+        console.log(e.features[0].properties)
+
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        new mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setHTML("<h6><p><b>ADDRESS: " + address + "</b></h6><p>APN: " + apn + "</p><p>CASE DESCRIPTION:  " + caseDescription + "</p><p>YEAR BUILT: " + yearbuilt + "</p>")
+            .addTo(map);
+    });
+
+    // Change the cursor to a pointer when the mouse is over the places layer.
+    map.on('mouseenter', 'CodeViolation_Curb', function(e) {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change it back to a pointer when it leaves.
+    map.on('mouseleave', 'CodeViolation_Curb', function(e) {
+        map.getCanvas().style.cursor = '';
+    });
+
+    map.doubleClickZoom.enable();
+
+    map.addControl(
+        new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl
+        })
+    );
+
+    map.addControl(new mapboxgl.NavigationControl());
+</script>
+
+</html>
