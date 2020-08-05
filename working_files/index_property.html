@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html style="height:100%">
+
+    <head>
+        <!--Import Google Icon Font-->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!-- Compiled and minified JavaScript -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <!-- Compiled and minified CSS -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+        <!--Mapbox Geocoder CSS and JS Libraries-->
+        <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+        <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css" />
+        <!--Mapbox CSS and JS Libraries-->
+        <link href="https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css" rel="stylesheet" />
+        <script src="https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js"></script>
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+
+    <style>
+        body {
+            margin: 0;
+        }
+
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            height: 100vh;
+            margin-bottom: unset;
+        }
+
+        .row .col {
+            padding: 0 !important;
+        }
+
+        #map {
+            position: relative;
+            width: 100%;
+            height: 100%
+        }
+
+        .panel {
+            padding: unset !important;
+            overflow-y: auto;
+            margin-left: unset !important;
+            margin-right: unset !important;
+        }
+
+        .mapboxgl-popup {
+            max-width: 400px;
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            background-color: #606b60;
+            border-color: black;
+        }
+
+        input {
+            font: inherit !important;
+            width: 100% !important;
+            border: 0 !important;
+            background-color: transparent !important;
+            margin: 0 !important;
+            height: 30px !important;
+            color: #404040 !important;
+            color: rgba(0, 0, 0, 0.75) !important;
+            padding: 6px 45px!important ;
+            text-overflow: ellipsis !important;
+            white-space: nowrap;
+            overflow: hidden!important;
+        }
+
+        .infoarea{
+            margin: 25px;
+        }
+    </style>
+
+    <body>
+        <div class="row flex">
+            <!--            Left Panel-->
+            <div class="col s12 m6 panel">
+                <div id='map'></div>
+            </div>
+            <!--            Right Panel-->
+            <div class="col s12 m6 grey lighten-4 panel" style='overflow:scroll'>
+                <div class="row panel">
+                    <!--                    Tabs menu-->
+                    <div class="col s12">
+                        <ul class="tabs">
+                            <li class="tab col s3"><a href="#test1">About</a></li>
+                            <li class="tab col s3"><a href="#test2">Code Enforced Properties</a></li>
+                            <li class="tab col s3"><a href="#test3">Map Layers</a></li>
+                            <li class="tab col s3"><a href="#definitions">Definitions</a></li>
+                        </ul>
+                    </div>
+                    <!--                    Tab Pages-->
+                    <div id="test1" class="col s12">
+                        <div class="infoarea">
+                            <h5>Title Area</h5>
+                            <p>"S ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
+                            </p>
+                        </div>
+                    </div>
+                    <div id="test2" class="col s12">
+                        <div class="infoarea">
+                            <h5>Code Enforced Properties</h5>
+                        </div>
+                    </div>
+                    <div id="test3" class="col s12">
+                        <ul class="collection">
+                            <li class="collection-item">
+                                <p>
+                                    <label>
+                                        <input type="checkbox" checked="checked" name='CodeViolation_Curb'/> <!--This is where you add the real name of the layer-->
+                                        <span>Cases</span>
+                                    </label>
+                                </p>
+                            </li>
+                            <li class="collection-item">
+                                <p>
+                                    <label>
+                                        <input type="checkbox" checked="checked" name='LB Boundary'/>
+                                        <span>LB Boundary</span>
+                                    </label>
+                                </p>
+                            </li>
+                            <li class="collection-item">
+                                <p>
+                                    <label>
+                                        <input type="checkbox" checked="checked" name='City Council Boundaries Fill'/>
+                                        <span>Council Districts</span>
+                                    </label>
+                                </p>
+                            </li>
+                            <li class="collection-item">
+                                <p>
+                                    <label>
+                                        <input type="checkbox" name='calenviron'/>
+                                        <span>CalEnvironScreen - Long Beach Area</span>
+                                    </label>
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="definitions" class="col s12">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </body>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoibGJob3VzaW5nIiwiYSI6ImNrN3R1YnlybDB2M2szc280d3pmNTViZHYifQ.2lFHVEQl5YbTp4qgM2OmGQ';
+        var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/lbhousing/ckcfjvqit07cz1inzic14ug9r', // stylesheet location
+            center: [-118.165, 33.769], // starting position [lng, lat]
+            zoom: 11 // starting zoom
+        });
+
+        //Function to create tabs from materialize
+        var el = $('.tabs').first()[0];
+        var instance = M.Tabs.init(el);
+        $(document).ready(function() {
+            $('.tabs').tabs();
+        });
+        instance.updateTabIndicator();
+
+        //Function to take name of checkbox change mapbox layer
+        $("input[type=checkbox]").change(function() {
+            var datalayer = $(this).attr("name");
+            var visibility = map.getLayoutProperty(datalayer, 'visibility');
+            console.log(map.getLayoutProperty(datalayer, 'visibility'))
+            if (visibility === 'visible') {
+                map.setLayoutProperty(datalayer, 'visibility', 'none');
+            } else {
+                map.setLayoutProperty(datalayer, 'visibility', 'visible');
+            }
+        })
+
+        // Click event for popup
+        map.on('click', 'CodeViolation_Curb', function(e) {
+            var coordinates = e.features[0].geometry.coordinates.slice();
+            var apn = e.features[0].properties.APN;
+            var address = e.features[0].properties.Address_Normalized;
+            var totalViolations = e.features[0].properties.Total_Violations;
+            var caseDescription = e.features[0].properties.Case_Description_Full;
+            var yearbuilt = e.features[0].properties.Year_Built
+
+            console.log(e.features[0].properties)
+
+            // Ensure that if the map is zoomed out such that multiple
+            // copies of the feature are visible, the popup appears
+            // over the copy being pointed to.
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML("<h6><p><b>ADDRESS: " + address + "</b></h6><p>APN: " + apn + "</p><p>CASE DESCRIPTION:  " + caseDescription + "</p><p>YEAR BUILT: " + yearbuilt + "</p>")
+                .addTo(map);
+        });
+
+        // Change the cursor to a pointer when the mouse is over the places layer.
+        map.on('mouseenter', 'CodeViolation_Curb', function(e) {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+
+        // Change it back to a pointer when it leaves.
+        map.on('mouseleave', 'CodeViolation_Curb', function(e) {
+            map.getCanvas().style.cursor = '';
+        });
+
+        map.doubleClickZoom.enable();
+
+        map.addControl(
+            new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                mapboxgl: mapboxgl
+            })
+        );
+
+        map.addControl(new mapboxgl.NavigationControl());
+        
+        // Function to select parcel and fill contents from that parcel
+        
+        map.on('click', function (e) {
+        $("#test2").empty().html("<h5>Please wait loading information</h5><div class='progress'><div class='indeterminate'></div></div>");
+            checkclick++
+        checkabout();
+        var clicked_coordinates = e.lngLat;
+        if (checkclick == 1){
+		var features = map.queryRenderedFeatures(e.point, { layers: primarylayers});
+            //console.log(neighborhoodarea[0].properties.name)
+        getneighborhood(neighborhoodarea[0].properties.name)
+        //loadneigborhood(neighborhoodarea[0].properties.name)
+    	console.log(features[0].properties.APN);
+        var selected_parcel = features[0].properties.APN
+        $.getJSON(databaselink+"apn="+selected_parcel, function(data){
+            var features=data;
+           //console.log(data)
+           //console.log(features[0]['situsaddress'])
+            var saledate;
+            var saleamount = numeral(features[0]['lastsaleamount']).format('$0,0.00')
+            var SitusAddress = features[0]['situsaddress'];
+            var SitusCity = features[0]['situscity']
+            if (features[0]['lastsaledate'] == null){
+                saledate = "No date listed"
+            } else {saledate=features[0]['lastsaledate'].slice(0,4)}
+        
+            var saleprice;
+            
+            $("#property_view").append("<h5 id='siteaddress'>"+features[0]['situsaddress']+", "+features[0]['situscity']+"</h5>"+
+                                       "<table class='responsive-table'><tbody>"+
+                                       "<tr id='yearbuilt'><td class='grey lighten-3'>Year Built:</td><td>"+features[0]['yearbuilt1']+"</td></tr>"+
+                                       "<tr><td class='grey lighten-3'>Units:</td><td>"+features[0]['totunits']+"</td></tr>"+
+                                       "<tr><td class='grey lighten-3'>APN:</td><td><a href='https://portal.assessor.lacounty.gov/parceldetail/"+features[0]['ain']+"' target='_blank'> "+features[0]['ain']+"</a></td></tr>"+
+                                       "<tr><td class='grey lighten-3'>Owner Name:</td><td>Please Login To View</td></tr>"+
+                                       "<tr><td class='grey lighten-3'>Owner Address:</td><td>Please Login To View</td></tr>"+
+                                       "<tr><td class='grey lighten-3'>Bought Property On:</td><td>"+saledate+" for "+saleamount+"</td></tr>");
+            getsameowner(features[0].mailaddress, features[0]['situsaddress'], areafeature);
+        });
+   } else {
+       checkclick=0;
+      console.log("Clicked")}
+
+              
+    });
+
+        
+
+    </script>
+
+</html>
