@@ -383,14 +383,16 @@
         //Function to take name of checkbox change mapbox layer
         $("input[type=checkbox]").change(function() {
             var datalayer = $(this).attr("name");
-            
             var visibility = map.getLayoutProperty(datalayer, 'visibility');
-            console.log(map.getLayoutProperty(datalayer, 'visibility'))
-            if (visibility === 'visible') {
+            if ((visibility != 'none' && visibility != 'visible')) {
                 map.setLayoutProperty(datalayer, 'visibility', 'none');
-            } else {
-                map.setLayoutProperty(datalayer, 'visibility', 'visible');
+                console.log(map.getLayoutProperty(datalayer, 'visibility'))
             }
+            
+            if(visibility === 'none'){
+                map.setLayoutProperty(datalayer, 'visibility', 'visible');
+                console.log(map.getLayoutProperty(datalayer, 'visibility'))
+            } else {map.setLayoutProperty(datalayer, 'visibility', 'none')}
         })
 
         // Click event for adding info from map to panel
