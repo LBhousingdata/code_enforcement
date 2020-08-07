@@ -465,7 +465,7 @@
 
         map.addControl(new mapboxgl.NavigationControl());
 
-        d3.text("data/HH_Book_AG.csv", function(data) {
+        d3.text("https://lbhousingdata.github.io/code_enforcement/data/HH_Book_AG.csv", function(data) {
             var parsedCSV = d3.csv.parseRows(data);
 
             var container = d3.select("#csvtable")
