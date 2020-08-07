@@ -482,6 +482,13 @@
             .append("td")
             .text(function(d) { return d; });
         });
+        var scale = new mapboxgl.ScaleControl({
+            maxWidth: 150,
+            unit: 'imperial'
+        });
+        map.addControl(scale);
+
+        scale.setUnit('imperial');
     </script>
 
 </html>
